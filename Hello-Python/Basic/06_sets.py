@@ -8,3 +8,7 @@ print(type(my_other_set)) # Inicialmente es un diccionario
 
 my_other_set = {"Brais", "Moure", 35}
 print(type(my_other_set))
+
+print(len(my_other_set))
+
+print(my_other_set)
