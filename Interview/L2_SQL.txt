@@ -1,0 +1,60 @@
+SQL Interview questions-f
+Q 1. Query is long running, what steps u will take?  
+
+Q 2. What is a deadlock? How will you go about resolving deadlocks?
+
+Q 3. What is Constraints and its types?
+
+Q 4. Different between Primary Key and Unique Key?
+
+Q 5. Difference between Delete, Truncate and Drop?
+
+Q 6. Types of Statements in SQL?
+
+Q 7. What is TCL and DCL?
+
+Q 8. How many methods, we can use to insert the values in table?
+
+Q 9. Query to insert the values is particular column?
+
+Q 10. Query to create new table from existing table?
+
+Q 11. Query to create new table from existing table without copying the data?
+
+Q 12. Types of functions in SQL. (Particularly Single Row Function- Number, Character(substr & instr), Date Fun., Conversion Function, General Fun (NVL, NVL2))
+
+Q 13.  Print the emp_name, Salary (with the commission) as Total_Income for all the employees. (If there is no commission only Salary Should print)
+
+Q 14. What is Group functions in SQL?
+
+Q 15. Difference between ‘Where’ and ‘Having Clause’ (in which condition, we use having clause).
+
+Q 16. Query to fetch Ename, deptno, Max_Sal from each department from Employee table? 
+
+Q 17. Query to fetch the number of employees, heired every year. ( Columns- ename, hiredate’)
+
+Q 18. Some scenario-based questions from Joins like below. (mainly Equi join & Inner join)
+
+Q 19. From the Employee and Department table, write a query to fetch the departments where number of employees is greater than 8?
+
+Q 20. Types of joines with explanation? 
+
+Q 21. What is Index in SQL and types? (with SYNTAX)
+
+Q 22. Difference between Index Scan and  Full table Scan in SQL?
+
+Q 23. What is view and its types?
+
+Q 24. Query to find 7th highest salary?
+
+Q 25. Query to find duplicate rows in table?
+
+Q 26. Query to delete duplicate rows in table?
+
+Q 27. Query to fetch last record from the table?
+
+Q 28. Query to fetch even/odd rows from the table?
+
+Q 29. Rank and Dense rank concepts?
+
+Q 30. Special operators uses (%, _ with like)

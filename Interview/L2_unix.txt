@@ -1,7 +1,7 @@
 SQL Interview questions-f
 Q 1. Query is long running, what steps u will take?  
-Check if the number of records being selected, inserted, deleted or updated is more than usual. If not, look for better execution plans or if the advisor recommends creating an index.
-
+Check if the number of records being selected, inserted, deleted or updated is more than usual. 
+If not, look for better execution plans or if the advisor recommends creating an index.
 
 Q 2. What is a deadlock? How will you go about resolving deadlocks?
 Q 3. What is Constraints and its types?
