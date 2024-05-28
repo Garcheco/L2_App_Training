@@ -1,33 +1,78 @@
 SQL Interview questions-f
+
 Q 1. Query is long running, what steps u will take?  
+	1. Analyze the query
+	2. Check indexes - for the appropriate index are in place for the tables being queried
+	3. Check if we are using the right datatype in the columns being used
+	— 4. In case this doesn’t work, asking for more resources to improve performance.
+
+
 
 Q 2. What is a deadlock? How will you go about resolving deadlocks?
+	it is when two or more transactions are waiting for each other to release the data. This ones can occur when the transactions are trying to lock the same data in different order.
 
 Q 3. What is Constraints and its types?
 
+Primary key
+Foreign key
+Unique key
+Not NULL
+Default 
+Check 
+
 Q 4. Different between Primary Key and Unique Key?
 
+
 Q 5. Difference between Delete, Truncate and Drop?
+Delete - removes individual row from table
+Truncate - Purge the table, but don’t delete the “Table”
+Drop - deletes a table and all of its data
 
 Q 6. Types of Statements in SQL?
+TCL - transactions control language - Commit, rollback, start transactions
+DCL - data control language - Use to grant o revoke permissions to users
+DML - Data manipulation language - insert, update, delete data in tables
+????
 
-Q 7. What is TCL and DCL?
+Q 7. What is TCL and DCL?	
+TCL - transactions control language - Commit, rollback, start transactions
+DCL - data control language - Use to grant o revoke permissions to users
+
 
 Q 8. How many methods, we can use to insert the values in table?
+Insert with columns and without.
 
 Q 9. Query to insert the values is particular column?
+INSERT INTO table_name (column1, column2,…column n)
+VALUES (value1, value2,…, value n)
 
 Q 10. Query to create new table from existing table?
+CREATE TABLE table_name ON DB_schema
+
 
 Q 11. Query to create new table from existing table without copying the data?
 
+CREATE TABLE table_name 
+SELECT *
+WHERE 1=2. §§ La condición que no cumple nos ayuda para que la sentencia no traiga datos
+FROM existing_table;
+
 Q 12. Types of functions in SQL. (Particularly Single Row Function- Number, Character(substr & instr), Date Fun., Conversion Function, General Fun (NVL, NVL2))
+
+Aggregate Functions - SUM,COUNT, AVG, MIN, MAX
+Date - YEAR, MONTH, DAY, CURDATE
+String - ASCII, LEN,
+Numeric - POW, SQRT
+
+NVL - null value logic - NULL
+NVL2 - NOT NULL
 
 Q 13.  Print the emp_name, Salary (with the commission) as Total_Income for all the employees. (If there is no commission only Salary Should print)
 
 Q 14. What is Group functions in SQL?
 
 Q 15. Difference between ‘Where’ and ‘Having Clause’ (in which condition, we use having clause).
+	HAVING - GROUP BY
 
 Q 16. Query to fetch Ename, deptno, Max_Sal from each department from Employee table? 
 
@@ -38,23 +83,78 @@ Q 18. Some scenario-based questions from Joins like below. (mainly Equi join & I
 Q 19. From the Employee and Department table, write a query to fetch the departments where number of employees is greater than 8?
 
 Q 20. Types of joines with explanation? 
+	INNER JOIN
+	LEFT JOIN
+	RIGHT JOIN
+	OUTER JOIN
 
 Q 21. What is Index in SQL and types? (with SYNTAX)
+§§
+Estructurado de la columna - indice de un libro
+Tipo: primary key, 
+unique key - CREATE UNIQUE INDEX on column_name 
+Non - unique: CREATE INDEX on column_name
 
 Q 22. Difference between Index Scan and  Full table Scan in SQL?
+Perfomance improve 
+
+
 
 Q 23. What is view and its types?
+§§
 
 Q 24. Query to find 7th highest salary?
 
+SELECT salario
+FROM empleados
+ORDER BY salario DESC
+LIMIT 1 OFFSET 6;
+
 Q 25. Query to find duplicate rows in table?
 
+SELECT *
+FROM table_name
+GROUP BY column1, column2, ….
+HAVING COUNT(*) > 1;
+
 Q 26. Query to delete duplicate rows in table?
+	§§
+DELETE costumer
+FROM costumer
+WHERE ROW_NUMBER(??) OVER ( by costumer_1, costumer_2, …, costumer_n) > 1;
+
+
+SELECT id FROM table name
+DELETE id WHERE id = 20
 
 Q 27. Query to fetch last record from the table?
 
+SELECT *
+FROM table_name
+WHERE id=(SELECT MAX(id) FROM table_name);
+
+SELECT *
+FROM table_name
+ORDER BY id DESC
+LIMIT 1;
+
+
+
 Q 28. Query to fetch even/odd rows from the table?
+
+SELECT *
+FROM table_name
+WHERE id % 2 = 0
+
+SELECT *
+FROM table_name
+WHERE id % 2 = 1
 
 Q 29. Rank and Dense rank concepts?
 
+
+
 Q 30. Special operators uses (%, _ with like)
+% - wildcard used to fill any number of characters before or after one string/character
+_ - wildcard for any character but ONLY one character
+
