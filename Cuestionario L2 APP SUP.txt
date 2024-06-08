@@ -1,0 +1,663 @@
+I am an experienced Application Support Level 2 professional, specializing in web applications within the financial services sector, specifically at USAA. My primary responsibility is to ensure the continuous and optimal performance of web applications that support the company's operations.
+In my daily role, I handle incidents, perform diagnostics, and collaborate closely with development and operations teams to resolve critical issues. I have a solid understanding of ITIL processes, including incident, problem, and change management, which enables me to effectively manage high-pressure situations and minimize impact on end-users.
+I possess technical skills in server monitoring and management, utilizing diagnostic tools such as curl, telnet, and ps, as well as experience in database management and optimization. Additionally, I am familiar with administering web and application servers, including starting and stopping services like Apache Tomcat in Linux environments.
+I am proactive in identifying improvements and automating processes, committed to delivering quick and effective solutions to ensure customer satisfaction and system stability.
+
+
+
+
+SQL Interview questions-f
+
+Q 1. Query is long running, what steps u will take?  
+	1. Analyze the query
+	2. Check indexes - for the appropriate index are in place for the tables being queried
+	3. Check if we are using the right datatype in the columns being used
+	— 4. In case this doesn’t work, asking for more resources to improve performance.
+
+
+Q 2. What is a deadlock? How will you go about resolving deadlocks?
+	it is when two or more transactions are waiting for each other to release the data. This ones can occur when the transactions are trying to lock the same data in different order.
+
+Q 3. What is Constraints and its types?
+	SQL constraints used to specify rules for the data in a table, this ones are used to limit the type of data that can go into a table and we have 6 types of main constraints:
+NOT NULL
+PRIMARY KEY
+FOREIGN KEY
+UNIQUE
+CHECK
+DEFAULT
+	And we could include also CREATE INDEX
+
+Q 4. Different between Primary Key and Unique Key?
+	The primary key is the main index of the table also the primacy cannot be NULL and each table can only had 1 Primary Key. Also the Primary Key have UNIQUE data.
+
+Q 5. Difference between Delete, Truncate and Drop?
+	DELETE: Will be remove only de data in the row/rows selected. 
+	TRUNCATE: Will be Purge all the table and the table settings.
+	DROP: Will be delete the table from the schema.
+
+Q 6. Types of Statements in SQL?
+
+	TCL - Transaction Control Language - COMMIT, ROLLBACK, SAVE POINT
+	DCL - Data Control Language - GRANT, REVOKE
+	DML - Data Manipulation Language - INSERT, DELETE, UPDATE
+	DDL - Data Definition. Language - ALTER, CREATE, TRUNCATE, DROP
+	DQL - Data Query Language: is used to fetch the data from the Database - SELECT
+	
+
+Q 7. What is TCL and DCL?	
+	TCL - Transaction Control Language - these commands/statements are used to be committed in the database, and this commands can only use with DML commands like ex: COMMIT, ROLLBACK.
+
+	DCL - Data Control Language - these commands are used to grant an take back authority from any database user. - GRANT, REVOKE.
+
+
+Q 8. How many methods, we can use to insert the values in table?
+	We can use 2 methods to insert values in a table. The first one specifying the column names and the value to be inserted:
+
+INSERT INTO table_name (column1, column2, column3, …)
+VALUES (value1, value 2, value 3, …)
+
+And the other option without specifying the column names, only inserting the values:
+
+INSERT INTO table_name
+VALUES (value1, value 2, value3, …)
+
+
+Q 9. Query to insert the values is particular column?
+	INSERT INTO table_name (column1, column2, column3, …)
+	VALUES (value1, value 2, value 3, …)
+
+Q 10. Query to create new table from existing table?
+CREATE TABLE new_table_name (
+	column1 INT PRIMARY KEY,
+    	column2 VARCHAR(100) NOT NULL,
+    	column3 DATE DEFAULT NULL
+);
+
+INSERT INTO new_table_name (column1, column2, column3)
+SELECT old_table_column1, old_table_column1, old_table_column1
+FROM old_table;
+
+Q 11. Query to create new table from existing table without copying the data?
+
+CREATE TABLE new_table_name 
+SELECT *
+FROM old_table_name
+WHERE 1 = 0;
+
+
+Q 12. Types of functions in SQL. (Particularly Single Row Function- Number, Character(substr & instr), Date Fun., Conversion Function, General Fun (NVL, NVL2))
+
+AGGREGATE functions: SUM, AVG, MAX, MIN, COUNT
+STRING: CONCATE, SUBSTRING, LEN, CAST
+DATE: YEAR, DAY, MONTH
+NVL: IFNULL
+NVL2: IS NOT NULL
+
+Q 13.  Print the emp_name, Salary (with the commission) as Total_Income for all the employees. (If there is no commission only Salary Should print)
+
+SELECT emp_name, CASE
+WHEN commission >= 1 then salary + commission
+ELSE salary
+END AS Total_Income
+FROM employees;
+	
+
+SELECT emp_name, CASE 
+WHEN commission IS NOT NULL THEN salary + commission 
+ELSE salary 
+END AS Total_Income 
+FROM employees;
+
+Q 14. What is Group functions in SQL?
+Also knowing like Aggregate functions, are used to perform operations on a set of values to return a single scalar value. Usually these functions are used with “GROUP BY” clause to group rows.
+
+Q 15. Difference between ‘Where’ and ‘Having Clause’ (in which condition, we use having clause).
+In SQL, both the WHERE and HAVING clauses are used to filter records. WHERE is used to filter record before any grouping are made. 
+And HAVING is used to filter record after the ‘GROUP BY’ operation has been performed
+
+Key Differences
+Timing of Application:
+WHERE filters rows before grouping.
+HAVING filters groups after grouping.
+Use of Aggregate Functions:
+WHERE cannot use aggregate functions.
+HAVING can use aggregate functions.
+Scope:
+WHERE is used to filter records in a SELECT, UPDATE, DELETE statement before grouping.
+HAVING is used to filter groups in a SELECT statement that involves GROUP BY.
+
+Q 16. Query to fetch Ename, deptno, Max_Sal from each department from Employee table?
+
+SELECT Ename, deptno, MAX(salary) as Max_sal
+FROM employees
+GROUP BY deptno, 
+
+Q 17. Query to fetch the number of employees, hired every year. ( Columns- ename, hiredate’)
+
+SELECT ename, YEAR(hiredate) AS year_hired, COUNT(*) as num_emp_hired
+FROM employees
+GROUP BY year_hired
+ORDER BY year_hired DESC;
+
+Q 18. Some scenario-based questions from Joins like below. (mainly Equi join & Inner join)
+
+
+Q 19. From the Employee and Department table, write a query to fetch the departments where number of employees is greater than 8?
+SELECT d.deptno, d.deptname, COUNT(e.empno) AS num_emp
+FROM Department d 
+JOIN Employee e 
+ON d.deptno = e.deptno 
+GROUP BY d.deptno, d.deptname 
+HAVING num_emp > 8;
+
+Q 20. Types of joines with explanation? 
+INNER JOIN: selects records that have matching values in both tables being joined. It excludes rows that do not have matches in the other table.
+LEFT JOIN: Returns all records from the left table and the matched records from the right table. If no match is found, NULL values are returned for columns from the right table.
+RIGHT JOIN: is the opposite of a LEFT JOIN. It includes all rows from the right table and only those from the left table that match the join condition. Non-matching rows from the left table result in NULLs in the result set.
+FULL OUTER JOIN: combines the results of both LEFT JOIN and RIGHT JOIN. It returns rows that have matching values in both tables, plus rows from the left table with no match in the right table (resulting in NULLs), and rows from the right table with no match in the left table (resulting in NULLs).
+
+Q 21. What is Index in SQL and types? (with SYNTAX)
+It’s a way to improve your query perfomance creating an INDEX of a column. We have 3 types of INDEX:
+	Primary Key index: 
+	Unique Index: CREATE DISTINCT INDEX idx_index-name
+			FROM table_name
+	Non-Unique index
+
+An INDEX is a object that improves the speed of data retrieval operations on a table at the cost of additional storage space and potential write performance overhead. INDEXes are created on columns that are frequently used in search, these ones works similarly to indexes in books, allowing the database to find data quickly without scanning the entire table.
+
+Types of Indexes in SQL
+Single-Column Index
+	CREATE INDEX index_name
+	ON table_name (column_name);
+Composite Index
+	CREATE INDEX index_name
+	ON table_name (column1, column2, ...);
+Unique Index
+	CREATE UNIQUE INDEX index_name
+	ON table_name (column_name);
+Full-Text Index
+	CREATE FULLTEXT INDEX index_name
+	ON table_name (column_name);
+Clustered Index
+	CREATE CLUSTERED INDEX index_name
+	ON table_name (column_name);
+Non-Clustered Index
+	CREATE NONCLUSTERED INDEX index_name
+	ON table_name (column_name);
+
+
+
+Q 22. Difference between Index Scan and  Full table Scan in SQL?
+you want to optimize your queries to leverage index scans whenever possible for improved performance. 
+
+
+Q 23. What is view and its types?
+A view acts like a virtual table. It doesn’t store data itself but provides a way to see data from one or more underlying tables. 
+
+A view is a virtual table based on the result-set of an statement. A view contains rows and columns just like a real table. The fields are from one or more tables in the DB.
+
+Types of view: there are two main types of views
+Simple Views
+		CREATE VIEW view_name AS
+	SELECT column1, column2, ...
+	FROM table_name
+	WHERE condition;
+Complex Views
+	CREATE VIEW view_name AS 
+	SELECT column1, column2, ... 
+	FROM table1 
+	JOIN table2 ON join_condition1 
+	JOIN tableN ON join_conditionN 
+	WHERE filter_condition 
+	GROUP BY group_column1, group_column2, ... 
+	HAVING aggregation_condition 
+	ORDER BY order_column ASC|DESC;
+
+Q 24. Query to find 7th highest salary?
+
+SELECT salary
+FROM employees
+ORDER BY scary DESC
+LIMIT 1 OFFSET 6;
+
+SELECT Salary 
+FROM ( 
+	SELECT Salary, RANK() OVER (ORDER BY Salary DESC) AS salary_rank 
+	FROM Employees 
+	) ranked_salaries 
+WHERE salary_rank = 7;
+
+Q 25. Query to find duplicate rows in table?
+
+	SELECT column1, COUNT(*) AS dup_rows
+	FROM table_name
+	GROUP BY column1	
+	HAVING dup_rows > 1;
+
+Q 26. Query to delete duplicate rows in table?
+
+DELETE FROM table_name
+WHERE column_name IN (
+    SELECT column_name
+    FROM table_name
+    GROUP BY column_name
+    HAVING COUNT(*) > 1
+);
+
+Q 27. Query to fetch last record from the table?
+	SELECT *
+	FROM table_name
+	WHERE Primary_Key = (SELECT MAX(Primary_Key) FROM table_name);
+
+	SELECT *
+	FROM table_name
+	ORDER BY Primary Key DESC
+	LIMIT 1;
+
+
+Q 28. Query to fetch even/odd rows from the table?
+
+	SELECT *
+	FORM table_name
+	WHERE primary_key % 2 = 1;    impar
+
+	SELECT *
+	FORM table_name
+	WHERE primary_key % 2 = 0;     es cuando es par
+
+	
+	SELECT CASE 
+	WHEN user_id % 2 = 0 then 'The ROW is EVEN'
+	WHEN user_id % 2 = 1 then 'The ROW is ODD'
+	END AS Even_Or_Odd
+	FROM users;
+
+
+
+Q 29. Rank and Dense rank concepts?
+	
+	RANK() function is a window function that assigns a rank to each row in the partition of a result set. The same column values receive the same ranks. 
+When multiple rows share the same rank, the rank of the next row is not consecutive. 
+For example the first and the second row share the same rank because they have the same value. The third row gets the rank 3 because the RANK() function skips the ranks 2.
+
+EX.1-10, 1-10, 3-9, 3-9, 3-9, 3-9, 7-8…….
+
+	If we want to have consecutive ranks, we can use the DENSE RANK() function, also is a window function that assigns consecutive ranks to rows in an ordered partition.
+
+EX 1-1-, 1-10, 2-9, 2-9, 2-9, 2-9, 3-8…….
+
+
+Q 30. Special operators uses (%, _ with like)
+
+‘%’ wildcard - matches zero or more characters,  
+EX —> SELECT * FROM table_name WHERE column_name LIKE ‘abc%’; - finds any values that start with ‘abc’
+
+‘_’ matches exactly ONLY one character.
+EX —> SELECT * FROM table_name WHERE column_name LIKE ‘a_c’; - fins any values with ‘a’ as the first character, ‘c’ as the third character, and any SINGLE character in between.
+
+
+
+
+
+ 
+Q 1. How to delete empty lines in a file?
+	To delete empty files in a file we could use the command sed in the next way:
+	sed ’/^%/d’ file_name
+	cat file_name | sed ‘/^$/d’ 
+	
+Q 2. How to print the hidden files? 
+	To print the hidden files in the actual directory we use: 
+	ls -a
+	
+Q 3. How to display the files in a directory, size less than 4 MB?
+	we gonna use the command find with the below syntax:
+	find path -type f -size -4M
+	
+Q 4. How to transfer files from one application Server to another server?
+	We can use a file transfer protocol, for example SFTP
+	and the steps to doit are the next ones:
+	- sftp user_in traget_host@target_host 
+	- (will ask for the user password/credentials)
+	will use the command cd to navigate in the host and lcd to change directories in the local machine/server
+	- cd /path/to/remote/directory
+	- lcd /path/to/local/directory
+	we can use put to upload files from the local to the remote server, OR we can use get to download files from the remote to the local server
+	- put local_file_name
+	- get remote_file_name
+	and we gonna close/exit the connection typing “bye”
+	- bye
+
+Q 5. How to connect to DB from Unix Server?
+	Using mysql the steps to connect to DB from unix CLI is:
+	mysql -u username -p -h host_name -D db_name
+	  
+
+Q 6. What is the first line of the Script (shebang) and what it denotes/indicates?
+	#! bin/bash
+	and indicates which interpreter the script will be using, for this example Bash
+
+Q 7. How to run a process in background and what is it’s advantage?
+	typing an ‘&’ at the end of the command and the advance its you will have the terminal open to run other commands while the other still executing
+
+Q 8 . How you will find %memory & %CPU utilization? (TOP command and it’s output)
+	TOP and HTOP
+
+Q 9. How do you find the number of occurrences of the word in the file? (wc -w)
+	We can use a grep to indicate the string to count the occurrence follow by a pipe to use the output and after count how many times the string occurs
+	grep word file_name | wc -w
+	also we can use the argument -c —count from grep: grep -c word file_name
+
+
+
+Q 10. How do you delete the files older than 10 days?
+	the first step is find all the files older than 10 days, and for this we could use the command find and its argument -delete:
+	find path -mtime +10 -type f -delete
+
+Q 11. How do you find the line count for the matching pattern?
+	grep word file_name | wc -l
+
+Q 12. Write a command to print the lines that ends with the word "specific_word"?
+	grep “specific_word$” file_name
+
+Q 13. Write a command to print the lines matching with exact word?
+	grep “string_to_find” file_name
+
+Q 14. Match all words starting with “Particular String”.
+	grep “^Particular String” file_name
+
+Q 15. Match all pattern which starts with q and doesn’t follow by u?
+	grep “^q[^u].+” file_name
+
+Q 16. To show below and above 2 lines of the matching pattern?
+	using the grep arguments A,B,C
+
+Q 17. How to zip and unzip the files?
+	to zip we gonna use: 
+	- zip file_name directory_path
+	to unzip we gonna use:
+	- unzip zip_file_name directory_path
+
+Q 18. How to display files names which contain given word?
+	grep -rl word *
+
+Q 19. How to search for multiple matching string in the file?
+	we can do it using grep with the argument -e —>tags or using grep and after with less searching for the other string using /string
+	- grep -e “string1” -e “string2” file_name
+
+Q 20. To delete the file which is having permission 644?
+	You will need write access to the directory where the file is in, no matter if you have the “write” permission.
+
+Q 21. How to change the permission of any file?
+	Using the command “chmod”
+
+Q 22. How to set default permission of any file? 
+	using the command “umask” following for the permission you want to set with the octal mode
+	- umask 644
+
+Q 23, What is the default permission newly created file and directory?
+	for files the default is 644 and for directories is 755
+
+
+Q 24. Create a 0 byte file with 477 permission?
+	touch file_name && chmod 477 filen_name
+
+Q 25. If file content is space separated, then how to show only last field of the file?
+	awk '{print $NF}' file.txt
+
+Q 26. Print all input lines from filename that have more than 4 fields.
+	awk 'NF > 4' filename
+
+Q 27. Print the total number of lines in the filename to the screen.
+	wc -l file_name
+
+Q 28. If the files having 4 fields and if any field is blank then delete that particular line?
+	awk
+
+Q 29. How to replace 4th occurrence of any pattern with given new pattern?
+	sed -z 's/pattern/new_pattern/4' filename
+
+Q 30. How to replace the word from the 11th to 19th line only?
+	sed -i ’11,19s/word/new_word/g’ file_name
+
+Q 31. How to replace all the occurrences of any word with given word in a file?
+	sed ’s/word/mew_word/g’ file_name
+
+Q 32. How to print from 34th to 45th line with repeating the line?
+	
+
+Q 33. Write a command to print the lines that do not contain the word "run"?
+	grep -v “run” file_name
+	sed ‘/run/d’ file_name	
+
+Q 34. What is the difference between ‘cmp’ and ‘diff’ commands?
+	“cmp” evaluate the files byte by byte and indicate if the file are different while “diff” evaluate the files and share the differences in the file.
+
+Q 35. How to open the file from 60th line?
+	tail +60 filename
+
+Q 36. How to search any ERROR string in VI editor and navigate it? (upward & downward)
+	vi file_name
+	Once we are in vi type /ERROR and use “n” to navigate to the next ERROR and use “N” to go to the previous ERROR
+
+Q 37. How to copy and delete any line in VI?
+	in Vi you can use y to copy a line and dd to delete it
+
+Q 38. How to go into Insert mode from Command mode?
+	Typing i
+
+Q 39. How to save the changes and exit from VI?
+	once you exit the insert mode type :wq
+
+
+
+Q 40. How to go to 56th line in VI?
+	in commando go type 56G or type double colon and the 56 
+	
+Q 41. How to replace all occurrences of some specific character? (:%s/oldText/newText/g)
+	similar at sed command first enter to command mode typing : and % to apply to all file
+	after doing the same sequence: s/old_text/new_text/g
+
+Q 42. How to append a file to current file using VI editor?
+
+Q 43. What is the UNIX command to list files/folders in alphabetical order and sorted with modified time?
+	with ls -ltr
+	l: long, t: time sorted, r: reverse way started from the last one
+
+Q 44. What ‘more’ command does?
+	Prints the content of a file in page type in console 
+
+Q 45. How to display 57th line of the file? (with head and tail command)
+	head -57 file_name | tail -1
+
+Q 46. What is Zombie Process and how you get Zombie process in unix?
+		
+
+Q 47. What is the command to find maximum memory taking process on the server?
+	ps aux -sort=-%MEM | head -1
+
+Q 48. What is the command to find the currently running process in Unix Server?
+	ps or top
+
+Q 49. What is the command to find remaining disk space in the UNIX server?
+	df -h path/directory	
+
+Q 50. What is the UNIX command to confirm a remote host is alive or not?
+	ping dns/ip
+
+Q 51. What is the method to see command line history?
+	history
+
+Q 52. What is the command to find if the system is 32 bit or 64 bit?
+	Uname -i
+
+Q 53. What is the purpose of the “echo” command?
+	print to command the input
+
+Q 54. Write a command to erase all files in the current directory including all its subdirectories.
+	rm -r*
+Q 55. Which command is used for remote login? 
+	ssh user_name@server -p port to use
+	prompt will ask for credentials
+	and then you join.
+Q 56. Which command determines the IP address and domain name?
+	nslookup domain_name
+
+
+Q 57. What is the importance of $#? (arguments)
+	$# this variable holds the number of arguments passed to the script
+
+Q 58. How do you find status of the last command executed? (meaning of 0 & 1)
+	$?
+	0 is passed and 1 if failed
+
+Q 59. Name the command that is used to take the backup?
+	cp -r source_path/file_name  destination_path
+	tar [options] [files/directories] [archive_file]  tar -cvzf my_backup.tar.gz /path
+
+Q 60. difference between $$ and $!?	
+	$$ prints the current executing process
+	$! prints the most recently backgrounded process in the current shell
+
+Q 61. If-Else condition in Shell Scripting?
+
+Q 62. How to write a function in BASH Shell?
+
+Q 63. What is the importance of PIPE command in Unix?
+	Pipe allows us to connect the output of one command to the input of another.
+
+Q 64. WHILE & FOR loop and CASE statement in Shell?
+
+Q 65. Why we use Break & Continue is Shell Scripting?
+	to stop the loop immediately and continue to slip the current iteration of the loop
+
+Q 66. Operators in UNIX Shell Scripting?
+Q 64. WHILE & FOR loop and CASE statement in Shell?
+Q 65. Why we use Break & Continue is Shell Scripting?
+Q 66. Operators in UNIX Shell Scripting?
+
+ 
+PLSQL Support Interview questions-
+Q 1. What is Procedure?
+Q 2. Syntax of writing Procedure and its Parts? (Procedure Specification & Procedure Body)
+Q 3. Defining Parameter and Procedure Modes?
+Q 4. What is Function in PLSQL?
+Q 5. Difference between Procedure and Function? (Important)
+Q 6. What is Trigger and it’s Types?
+Q 7. Syntax and Components of Database Triggers? (Timing🡪 Event 🡪 Type 🡪 Body)
+Q 8. What is Cursor?
+Q 9. Types of Cursor with explanation?
+Q 10. Basic Syntax of writing Cursor?
+
+
+ 
+JAVA Support Interview questions-
+
+Q 1. What do -Xmx and -Xms parameters mean? (Heap Size)
+	Xmx (máximo): Memoria máxima del montón de Java (donde se guardan los objetos).
+	-Xms (inicial): Tamaño inicial del montón al iniciar la aplicación Java.
+
+
+Q 2. What is the difference between JVM and JRE?
+JVM: Máquina Virtual Java, ejecuta código bytecode Java sin importar el sistema operativo.
+JRE: Entorno de ejecución Java, incluye JVM, librerías base y herramientas clave (java). No contiene herramientas de desarrollo.
+
+Q 4. How do you take a thread dump of a Java process?
+Sirve para capturar el estado de todos los hilos en un momento dado.
+Se usa jstack <PID> o señal SIGQUIT (kill -3 <PID>) para generar el volcado.
+
+Q 5. What is OutOfMemoryError in Java? How do you deal with that?
+Error por falta de memoria en el montón de Java.
+Puede ocurrir por creación excesiva de objetos, objetos muy grandes o un tamaño máximo de montón insuficiente (-Xmx).
+
+Q 6. What is the Garbage Collector?
+Proceso automático de Java que libera memoria ocupada por objetos que ya no se usan.
+
+Q 7. What is JDBC?
+API Java para acceder a bases de datos relacionales. Proporciona una forma estándar de interactuar con diferentes bases de datos.
+
+Q 8. What is the database connection pool?
+Database connection pooling is a method used to keep database connections open so they can be reused by others.
+Almacena conexiones de base de datos abiertas para reutilizarlas, evitando el costo de crear nuevas conexiones constantemente.
+
+Q 9. Your Java application is connected to a Database via a connection pool. Suddenly your database goes down? Is that an issue with your Java application? Do you need to restart your Java application?
+No necesariamente es un problema con la aplicación Java.
+La aplicación puede seguir funcionando usando las conexiones existentes en el pool hasta que se agoten. Reiniciar la aplicación solo sería necesario si se requieren nuevas conexiones.
+
+
+Q 10. What is the difference between HTTP and HTTPS?
+
+Q 11. Your Java application is connecting to another Java application (server) running on the remote host and listening on port 17865. Now, you don't have access to that remote host to go and see if the process is running. How do you find if the server is up and running? (telnet)
+
+Q 12. What is deadlock? How do you find if your Java program has a deadlock? 
+Q 13. How do you send a web service request from Linux? (curl and wget)
+Q 14. How do you check how much memory and CPU your Java process is consuming?
+Q 15. How do you start and stop Tomcat in Linux?
+Q 16. How do you check your Java process is running on Linux? (ps -ef | grep java)
+
+
+ 
+Application Support Questions –
+
+
+Q 1. Explain the ITIL Process in your Day-to-Day activity? (Service Mgt. Incident Mgt, Problem Mgt, Change Mgt, Knowledge Mgt.)
+Service Management: Ensure the delivery and management of IT services to meet business needs.
+Incident Management: Quickly restore normal service operations by addressing incidents, minimizing impact.
+Problem Management: Identify root causes of incidents to prevent future occurrences.
+Change Management: Manage changes in IT services to minimize disruption, ensuring proper planning and approval.
+Knowledge Management: Create, share, and utilize knowledge to improve efficiency and reduce recurring issues.
+
+Q 2. Knowledge of Job scheduler, Alert management & Server monitoring
+Job Scheduler: Tools like Cron, Jenkins, or Control-M to automate and schedule jobs.
+Alert Management: Use systems like Nagios, Zabbix, or PagerDuty to monitor services and send alerts for anomalies.
+Server Monitoring: Continuously track server performance and health using tools like Nagios, Zabbix, or Prometheus.
+
+Q 3. What is PROBLEM ticket?
+A problem ticket identifies the underlying cause of one or more incidents. It's used in problem management to find and eliminate the root cause, thereby preventing future incidents.
+
+Q 4. What is the condition of a P1 ticket and how do you handle it?
+Condition: Critical impact on business operations; services are down or severely degraded.
+Handling:
+Immediate incident response team activation.
+Escalate to senior management.
+Continuous communication with stakeholders.
+Quick workaround deployment if possible.
+Detailed incident report after resolution.
+
+Q 5. How to create and implement E- change.
+Create Change Request: Document change details, impact analysis, and rollback plan.
+Approval: Obtain necessary approvals from change advisory board (CAB).
+Implementation: Execute the change during a planned window.
+Review: Post-implementation review to ensure success and address any issues.
+
+Q 6. Prioritizing the issue among (application down, database stuck, batch failure)
+Application Down: Highest priority, affects business continuity.
+Database Stuck: High priority, impacts application performance.
+Batch Failure: Moderate priority, impacts data processing but might not be immediately business-critical.
+
+Q 7. How do you handle if customer reported that application is not opening?
+Initial Checks: Verify service status, network connectivity, and application logs.
+Communicate: Inform stakeholders and escalate if needed.
+Troubleshoot: Restart services, check for resource bottlenecks.
+Resolve: Apply fixes and monitor.
+
+Q 8. How do you handle if any job (which is loading the data to database) is running for long time than usual? (possibilities)
+Check Logs: Identify where the job is stuck.
+Resource Monitoring: Ensure there are no CPU, memory, or I/O bottlenecks.
+Dependencies: Verify any external dependencies are functioning.
+Escalation: Inform stakeholders and seek assistance if needed.
+
+Q 9. What are the reasons of application stuck/not working and how do you handle it? (What is the possible checks you will do)
+Resource Bottleneck: CPU, memory, or disk issues.
+Database Issues: Deadlocks, long-running queries.
+Network Issues: Connectivity problems.
+Code Bugs: Unhandled exceptions or memory leaks.
+Handling: Check logs, monitor resources, verify connectivity, restart services, and communicate with the team.
+
+Q 10. Tell any priority issue which you have recently resolved
+Issue: Application downtime due to a database failure. Resolution:
+Immediate Action: Notified stakeholders and activated the incident response team.
+Diagnosis: Identified a deadlock causing database unresponsiveness.
+Action Taken: Killed the offending process, optimized queries, and added monitoring to prevent recurrence.
+Outcome: Restored service within SLA, documented the incident, and implemented preventive measures.
+
