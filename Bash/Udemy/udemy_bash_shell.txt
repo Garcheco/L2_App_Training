@@ -1,3 +1,0 @@
-$ - Expand operator
-$ - is also called "command substitution"
-

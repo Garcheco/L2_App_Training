@@ -1,0 +1,6 @@
+total 24
+-rw-r--r--@ 1 chezko  staff    0 Jun 23 19:06 1.txt
+-rw-r--r--@ 1 chezko  staff    0 Jun 23 19:06 2.txt
+-rwxr-xr-x@ 1 chezko  staff  311 Jun 23 18:46 myscript.sh
+-rwxr-xr-x@ 1 chezko  staff  227 Jun 23 17:57 name.sh
+-rwxr-xr-x@ 1 chezko  staff  126 Jun 23 19:05 si.sh
