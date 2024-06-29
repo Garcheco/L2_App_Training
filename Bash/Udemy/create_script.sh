@@ -1,6 +1,6 @@
 #! /bin/bash
 
-read -p "What do you want to give to the executable Script file? " name
+read -p "What name do you want to give to the executable Script file? " name
 
 touch ${name}
 

@@ -1,24 +1,20 @@
 #! /bin/bash
 
-echo "select an option... "
-echo " type 1 to Do A"
-echo " type 2 to Do B"
-echo " type 3 to Do C"
-echo " type 4 to Do D"
-read choice 
-
-case $choice in
-	1)
-		echo "You choose  A "
+echo "type a character"
+read car
+case $car in
+	[0-9][0-9])  # In this way we ask for TWO numbers beetween 0-9 for each one, but only two, if we type only ONE this is not the case.
+		echo "You typed a number greater than 9 and less than 100."
 		;;
-	2)
-		echo "You choose  B"
+	[1-3] | [7-9])
+		echo "You typed a number between 1-3 OR 7-9"
 		;;
-	3)
+	[a-z]*)
+		echo "You typed an character."
+		;;
+	[A-Z])
 		echo "You choose  C"
-		;;
-	4)
-		echo "You choose D"
 		;;
 	*) echo "NONE of above"
 esac
+
