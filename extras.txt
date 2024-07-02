@@ -1,1 +1,5 @@
 Curso scripting - Udemy - https://www.udemy.com/course/linux-bash-shell-scripting-through-real-life-examples/?couponCode=LETSLEARNNOWPP
+
+
+https://github.com/asanzdiego/curso-nivelacion-bigdata-2017?tab=readme-ov-file  -  Curss y contenidos de shell/linux/sql
+
