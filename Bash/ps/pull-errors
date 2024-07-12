@@ -1,0 +1,7 @@
+#! /bin/bash
+# Author: Sergio contreras
+# Date: 07/11/2024
+# Description: This script will pull only error messages from /var/log/history.log
+# Modified: 07/11/2024
+
+grep -i error /workspaces/L2_App_Training/Bash/professional-scripts/error.log

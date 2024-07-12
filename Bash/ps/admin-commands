@@ -1,0 +1,12 @@
+#! /bin/bash
+
+# Author: Sergio contreras
+# Date: 07/11/2024
+# Description: Format the output of admin commands
+# Modified: 07/11/202
+
+date
+uptime
+df -h
+
+# if you want you can modify de ourput using awk '{print $1}'
