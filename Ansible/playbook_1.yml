@@ -1,0 +1,184 @@
+- name: Solucionar falla de logs pesados
+  hosts: tu_servidor_objetivo  # Reemplaza con el hostname o grupo de tu servidor
+  become: true  # Ejecutar tareas con privilegios elevados (root)
+
+  vars:
+    log_directory: /var/log
+    backup_mount_point: /mnt/backup_logs  # Reemplaza con el FS de backups
+    retention_days: 90
+    date_format: "%m/%d/%Y_%H:%M"
+
+  tasks:
+    - name: Obtener la lista de archivos de log ordenados por tamaño (descendente)
+      find:
+        paths: "{{ log_directory }}"
+        file_type: file
+      register: log_files_result
+
+    - name: Filtrar archivos por tamaño (opcional: define un umbral si es necesario)
+      set_fact:
+        large_log_files: "{{ log_files_result.files | sort(attribute='size', reverse=True) }}"
+
+    - name: Comprimir los archivos de log más pesados
+      become_user: root  # Asegura que la compresión se haga con los permisos correctos
+      command:
+        cmd: "tar czf {{ log_directory }}/{{ item.path | basename | regex_replace('^(.+)$', '\\1_{{ ansible_date.strftime(date_format) }}.tar.gz') }} {{ item.path }}"
+      loop: "{{ large_log_files }}"
+      # Puedes limitar la cantidad de archivos a comprimir si es necesario
+      # loop_control:
+      #   loop_var: log_file
+      #   index_var: file_index
+      # when: file_index < 5  # Ejemplo: Comprimir solo los 5 archivos más grandes
+
+    - name: Mover los archivos comprimidos al FS de backup
+      become_user: root
+      move:
+        src: "{{ log_directory }}/{{ item.path | basename | regex_replace('^(.+)$', '\\1_{{ ansible_date.strftime(date_format) }}.tar.gz') }}"
+        dest: "{{ backup_mount_point }}"
+      loop: "{{ large_log_files }}"
+
+    - name: Eliminar archivos de log originales (opcional, comentar si no deseas eliminarlos)
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ large_log_files }}"
+
+    - name: Eliminar backups antiguos (mayores de {{ retention_days }} días)
+      find:
+        paths: "{{ backup_mount_point }}"
+        file_type: file
+        age: "{{ retention_days }}d"
+      register: old_backups
+
+    - name: Eliminar backups antiguos
+      become_user: root
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ old_backups.files }}"
+      when: old_backups.files | length > 0
+
+
+Explicación del Playbook:
+
+name y hosts: Define el nombre del playbook y el servidor o grupo de servidores donde se ejecutará. Reemplaza tu_servidor_objetivo con el valor correcto de tu inventario de Ansible.
+become: true: Permite ejecutar las tareas con privilegios de superusuario (root), necesario para la manipulación de archivos en /var/log y el FS de backup.
+vars: Define variables para facilitar la configuración y la lectura del playbook:
+log_directory: La ruta al directorio de logs (/var/log).
+backup_mount_point: El punto de montaje del sistema de archivos de backup. ¡Asegúrate de que este directorio exista y esté montado en el servidor!
+retention_days: La política de retención de datos en días (90).
+date_format: El formato de fecha y hora para el nombre de los archivos comprimidos.
+tasks: Define la secuencia de acciones a realizar:
+Obtener la lista de archivos de log ordenados por tamaño: Utiliza el módulo find para obtener una lista de todos los archivos dentro del directorio de logs. El resultado se guarda en la variable log_files_result.
+Filtrar archivos por tamaño: (Opcional) Utiliza set_fact y el filtro sort para ordenar los archivos por tamaño de forma descendente. Esto te permitirá procesar primero los archivos más grandes.
+Comprimir los archivos de log más pesados:
+Utiliza el módulo command para ejecutar el comando tar czf.
+{{ item.path }}: Representa la ruta de cada archivo encontrado en la lista large_log_files.
+{{ item.path | basename }}: Extrae el nombre del archivo de la ruta.
+{{ item.path | basename | regex_replace('^(.+)$', '\\1_{{ ansible_date.strftime(date_format) }}.tar.gz') }}: Utiliza un filtro regex_replace para agregar la fecha y hora actual al nombre del archivo antes de la extensión .tar.gz. ansible_date.strftime(date_format) formatea la fecha y hora actual según la variable date_format.
+loop: "{{ large_log_files }}": Itera sobre la lista de archivos grandes.
+Se incluye un ejemplo comentado para limitar la cantidad de archivos a comprimir si fuera necesario.
+Mover los archivos comprimidos al FS de backup: Utiliza el módulo move para mover los archivos .tar.gz creados al directorio de backup.
+Eliminar archivos de log originales: (Opcional) Utiliza el módulo file con state: absent para eliminar los archivos de log originales después de la compresión y el movimiento. ¡Comenta esta tarea si no deseas eliminar los originales!
+Eliminar backups antiguos:
+Utiliza nuevamente el módulo find en el directorio de backup, pero esta vez con el parámetro age: "{{ retention_days }}d" para encontrar archivos con una antigüedad mayor a los días definidos en retention_days.
+El resultado se guarda en la variable old_backups.
+Eliminar backups antiguos: Utiliza el módulo file con state: absent para eliminar los archivos encontrados en old_backups. La condición when: old_backups.files | length > 0 asegura que esta tarea solo se ejecute si se encontraron archivos antiguos.
+Integración con Datadog:
+
+Para integrar este playbook con una alerta de Datadog, necesitarás configurar un webhook en Datadog que se active cuando se dispare la alerta. Este webhook deberá comunicarse con algún sistema que pueda ejecutar el playbook de Ansible. Algunas opciones comunes son:
+
+Ansible Tower/AWX: Estas plataformas tienen capacidades integradas para recibir webhooks y ejecutar jobs de Ansible.
+Un servidor intermedio (con Ansible instalado): Puedes configurar un servicio (por ejemplo, una pequeña aplicación web o un script que escuche webhooks) que reciba la notificación de Datadog y luego ejecute el playbook de Ansible utilizando la CLI de Ansible (ansible-playbook).
+Funciones Serverless (AWS Lambda, Azure Functions, Google Cloud Functions): Podrías crear una función serverless que reciba el webhook de Datadog y ejecute el playbook de Ansible (aunque esto puede ser más complejo de configurar).
+Consideraciones Importantes:
+
+backup_mount_point: Asegúrate de que el directorio de montaje del FS de backup (/mnt/backup_logs) exista y esté correctamente montado en todos los servidores donde se ejecutará este playbook.
+Permisos: Verifica que el usuario con el que Ansible se conecta al servidor tenga permisos suficientes para leer los archivos de log, comprimirlos (generalmente requiere ser root o tener permisos de escritura en el directorio), moverlos al destino de backup y eliminar archivos. El uso de become: true ayuda con esto.
+Pruebas: Es crucial probar este playbook en un entorno de staging o de no producción antes de implementarlo en producción. Asegúrate de que la compresión, el movimiento y la eliminación de archivos se realicen como se espera.
+Manejo de errores: Para un entorno de producción robusto, considera agregar manejo de errores al playbook (por ejemplo, usando block y rescue para capturar fallas).
+Idempotencia: Este playbook está diseñado para ser idempotente en la eliminación de backups antiguos (solo elimina los que son mayores de 90 días). Sin embargo, la compresión y el movimiento se realizarán cada vez que se ejecute el playbook. Si solo quieres comprimir los archivos que aún no han sido comprimidos, necesitarías agregar lógica adicional para verificar si ya existe un archivo comprimido para un log específico.
+Notificaciones: Considera agregar notificaciones al playbook (por ejemplo, por correo electrónico o Slack) para informar sobre la ejecución del job y cualquier error que ocurra.
+
+
+
+
+
+Script con Find
+
+---
+- name: Solucionar falla de logs pesados usando find para filtrar
+  hosts: tu_servidor_objetivo  # Reemplaza con el hostname o grupo de tu servidor
+  become: true  # Ejecutar tareas con privilegios elevados (root)
+
+  vars:
+    log_directory: /var/log
+    backup_mount_point: /mnt/backup_logs  # Reemplaza con el FS de backups
+    retention_days: 90
+    date_format: "%m/%d/%Y_%H:%M"
+    large_file_threshold_mb: 100  # Define un umbral en MB para considerar un archivo como "grande"
+
+  tasks:
+    - name: Encontrar los archivos de log más grandes (mayores de {{ large_file_threshold_mb }}MB)
+      find:
+        paths: "{{ log_directory }}"
+        file_type: file
+        size: "+{{ large_file_threshold_mb }}m"
+      register: large_log_files_result
+
+    - name: Comprimir los archivos de log encontrados
+      become_user: root  # Asegura que la compresión se haga con los permisos correctos
+      command:
+        cmd: "tar czf {{ log_directory }}/{{ item.path | basename | regex_replace('^(.+)$', '\\1_{{ ansible_date.strftime(date_format) }}.tar.gz') }} {{ item.path }}"
+      loop: "{{ large_log_files_result.files }}"
+      when: large_log_files_result.files | length > 0
+
+    - name: Mover los archivos comprimidos al FS de backup
+      become_user: root
+      move:
+        src: "{{ log_directory }}/{{ item.path | basename | regex_replace('^(.+)$', '\\1_{{ ansible_date.strftime(date_format) }}.tar.gz') }}"
+        dest: "{{ backup_mount_point }}"
+      loop: "{{ large_log_files_result.files }}"
+      when: large_log_files_result.files | length > 0
+
+    - name: Eliminar archivos de log originales (opcional, comentar si no deseas eliminarlos)
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ large_log_files_result.files }}"
+      when: large_log_files_result.files | length > 0
+
+    - name: Eliminar backups antiguos (mayores de {{ retention_days }} días)
+      find:
+        paths: "{{ backup_mount_point }}"
+        file_type: file
+        age: "{{ retention_days }}d"
+      register: old_backups
+
+    - name: Eliminar backups antiguos
+      become_user: root
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ old_backups.files }}"
+      when: old_backups.files | length > 0
+
+
+Cambios Realizados:
+
+Eliminación del Step de Filtrado: Se eliminó la tarea que usaba set_fact para filtrar los archivos.
+Modificación del Step find: La tarea para obtener la lista de archivos ahora incluye el parámetro size:
+size: "+{{ large_file_threshold_mb }}m": Esto le dice a find que solo liste los archivos cuyo tamaño sea mayor que el valor de la variable large_file_threshold_mb (definida en las variables).
+Variable large_file_threshold_mb: Se introdujo una nueva variable para definir el umbral de tamaño en megabytes (MB) para considerar un archivo como "grande". Debes ajustar este valor según tus necesidades y la definición de "archivos más pesados" en tu entorno.
+Uso de large_log_files_result.files: Las tareas posteriores (comprimir, mover, eliminar originales) ahora iteran directamente sobre el resultado de la búsqueda con find (large_log_files_result.files).
+Condiciones when: Se agregaron condiciones when a las tareas de comprimir, mover y eliminar originales para que solo se ejecuten si se encontraron archivos grandes.
+Cómo funciona ahora:
+
+El playbook ahora busca directamente los archivos que superan el umbral de tamaño definido. Esto simplifica el proceso y puede ser más eficiente al evitar la manipulación de una lista potencialmente grande de todos los archivos de log.
+
+Consideraciones Adicionales:
+
+Umbral de Tamaño: Es crucial definir un valor adecuado para large_file_threshold_mb. Este valor dependerá de tus logs y de cuándo consideras que un archivo se ha vuelto demasiado grande.
+Múltiples Criterios: Si necesitas criterios de filtrado más complejos (por ejemplo, archivos grandes y con cierta antigüedad), puedes combinar opciones en el módulo find. Consulta la documentación del módulo find de Ansible para más detalles.
+Este enfoque utilizando el parámetro size del módulo find debería ser una forma más directa y eficiente de lograr el filtrado que necesitas. ¡No dudes en ajustar el valor de large_file_threshold_mb según tu criterio!
+
